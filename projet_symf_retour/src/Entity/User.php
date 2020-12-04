@@ -41,7 +41,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:write","user:read"})    
+     * @Groups({"user:write","user:read","get_un_ad:read","get_deux_ad:read","get_trois_ad:read"})
+     * @Assert\NotBlank(message="Cet utilisateur")
      */
     private $username;
 
@@ -63,7 +64,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="blob",nullable=true)
-     * @Groups({"user:write","user:read"})
+     * @Groups({"user:write"})
      */
     private $photo;
 
@@ -72,14 +73,14 @@ class User implements UserInterface
      * @Assert\Email(
      *     message = "E-mail invalide."
      * )
-     * @Groups({"user:write","user:read"})
+     * @Groups({"user:write","user:read","get_trois_ad:read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $archivage;
+    private $archivage=0;
 
     public function getId(): ?int
     {
@@ -168,7 +169,12 @@ class User implements UserInterface
 
     public function getPhoto()
     {
-        return $this->photo;
+        $photo = $this->photo;
+        if (!empty($photo))
+        {
+            return (base64_encode(stream_get_contents($photo)));
+        }
+        return $photo;
     }
 
     public function setPhoto($photo): self

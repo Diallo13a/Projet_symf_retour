@@ -5,6 +5,7 @@ namespace App\Controller;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\UserRepository;
 
+use App\Services\PutService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\User;
+use App\Entity\Apprenant;
 
 class UserController extends AbstractController
 {
@@ -59,30 +61,35 @@ class UserController extends AbstractController
         //Recuperation de l'image
         $photo = $request->files->get('photo');
 
-        $user = $this->serializer->denormalize($user,"\App\Entity\User",true);
-        if(!$photo){
-            return new JsonResponse("Veuillez ajouter votre image",Response::HTTP_BAD_REQUEST,[],true);
+        $profil="App\\Entity\\".trim($user["type"]);
+        //dd(class_exists($profil)) ;
+        if (class_exists($profil)){
+            $user = $this->serializer->denormalize($user,$profil,true);
+            if(!$photo){
+                return new JsonResponse("Veuillez ajouter votre image",Response::HTTP_BAD_REQUEST,[],true);
+            }
+            $photoBlob = fopen($photo->getRealPath(),"rb");
+
+            $user->setPhoto($photoBlob);
+
+
+            $errors = $this->validator->validate($user);
+
+            /* if (count($errors)){
+                 $errors = $this->serializer->serialize($errors,'json');
+                 return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
+             }*/
+            $password =  $user->getPassword();
+            $user->setPassword($this->userpasswordEncoder->encodePassword($user,$password));
+            $user->setArchivage(false);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->json("success",201);
         }
-        $photoBlob = fopen($photo->getRealPath(),"rb");
 
-        $user->setPhoto($photoBlob);
-
-
-        $errors = $this->validator->validate($user);
-
-        if (count($errors)){
-            $errors = $this->serializer->serialize($errors,'json');
-            return new JsonResponse($errors,Response::HTTP_BAD_REQUEST,[],true);
-        }
-        $password =  $user->getPassword();
-        $user->setPassword($this->userpasswordEncoder->encodePassword($user,$password));
-        $user->setArchivage(false);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
-        return $this->json("success",201);
     }
 
     /**
@@ -93,6 +100,24 @@ class UserController extends AbstractController
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
         ]);
+    }
+
+    /**
+     * @Route(
+     *      name="updated" ,
+     *      path="/api/admin/users/{id}" ,
+     *       methods={"PUT"}
+     *),
+     * @Route(
+     *      name="UpdatedApprenant" ,
+     *      path="/api/apprenants/{id}" ,
+     *      methods={"PUT"}
+     *)
+     */
+    public function cool(Request $request , PutService $putService,$id) {
+
+        return  $putService->putData($request, $id) ;
+
     }
 
 }
