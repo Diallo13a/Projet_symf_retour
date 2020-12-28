@@ -42,7 +42,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 class Apprenant extends User
 {
     /**
-     * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="apprenants")
+     * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="apprenants", cascade={"persist"})
      */
     private $groupes;
 

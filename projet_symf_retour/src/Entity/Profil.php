@@ -18,7 +18,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *  routePrefix= "/admin",
  *  normalizationContext={"groups"={"profil:read"}},
  *  denormalizationContext={"groups"={"profil:write"}},
- *      itemOperations={
+ *      itemOperations={"get",
  *          "get_trois"={
  *               "method"="GET",
  *                   "path"="/profils/{id}/users",
@@ -26,7 +26,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *                   "security"="is_granted('ROLE_ADMIN')",
  *                   "security_message"="Vous n'avez pas access à cette Ressource"
  *          },
- *     "get_trois"={
+ *     "get_trois_ad"={
  *               "method"="DELETE",
  *                   "path"="/profils/{id}",
  *                   "normalization_context"={"groups"={"get_trois_ad:read"}},

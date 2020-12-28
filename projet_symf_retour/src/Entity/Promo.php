@@ -25,7 +25,7 @@ class Promo
 
     /**
      * @ORM\Column(type="date")
-     * @Groups({"getPrRfApFr:read")}
+     * @Groups({"getPrRfApFr:read"})
      */
     private $libelle;
 
@@ -48,6 +48,7 @@ class Promo
 
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promos")
+     * @Groups({"getPrRfApFr:read"})
      */
     private $referentiels;
 

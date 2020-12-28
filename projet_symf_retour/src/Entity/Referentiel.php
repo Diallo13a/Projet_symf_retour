@@ -72,18 +72,19 @@ class Referentiel
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"getPrRfApFr:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getallCompetenceref:read","getallrefgrpc:read","postrefcomp:write","getByIdRefCompe:read","getByIdRefCompeGrpc:read","putajoutsupref:write"})
+     * @Groups({"getallCompetenceref:read","getallrefgrpc:read","postrefcomp:write","getByIdRefCompe:read","getByIdRefCompeGrpc:read","putajoutsupref:write","getPrRfApFr:read"})
      */
     private $libelle;
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetence::class, inversedBy="referentiels",cascade={"persist"})
-     * @Groups({"getallCompetenceref:read","getallrefgrpc:read","postrefcomp:write","getByIdRefCompe:read","getByIdRefCompeGrpc:read","putajoutsupref:write"})
+     * @Groups({"getallCompetenceref:read","getallrefgrpc:read","postrefcomp:write","getByIdRefCompe:read","getByIdRefCompeGrpc:read","putajoutsupref:write","getPrRfApFr:read"})
      * @ApiSubresource
      */
     private $groupecompetences;

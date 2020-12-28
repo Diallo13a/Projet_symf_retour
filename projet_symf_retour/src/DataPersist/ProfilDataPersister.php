@@ -34,7 +34,12 @@ final class ProfilDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        // TODO: Implement persist() method.
+       
+       $data->setLibelle($data->getLibelle());
+       $data->setArchivage(true);
+       $this->entitymanager->persist($data);
+       $this->entitymanager->flush();
+
         return $data;
     }
 

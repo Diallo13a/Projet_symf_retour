@@ -36,12 +36,13 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:write","user:read","get_un_ad:read","get_deux_ad:read","get_trois_ad:read"})
+     * @Groups({"user:write","user:read","get_un_ad:read","get_deux_ad:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
      * @Assert\NotBlank(message="Cet utilisateur")
      */
     private $username;
@@ -52,7 +53,6 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"user:write","user:read"})
      */
     private $password;
 
@@ -73,12 +73,13 @@ class User implements UserInterface
      * @Assert\Email(
      *     message = "E-mail invalide."
      * )
-     * @Groups({"user:write","user:read","get_trois_ad:read"})
+     * @Groups({"user:write","user:read","get_trois_ad:read","getPrRfApFr:read","getApp:read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"getPrRfApFr:read"})
      */
     private $archivage=0;
 

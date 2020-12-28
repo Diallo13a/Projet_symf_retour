@@ -21,48 +21,48 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                   "security_message"="Vous n'avez pas access à cette Ressource",
  *
  *          },
- *      "getAllReferentielGrpC"={
+ *          "getApp"={
  *                   "method"="GET",
- *                   "path"="admin/referentiels/grpecompetences",
- *                   "normalization_context"={"groups"={"getallrefgrpc:read"}},
+ *                   "path"="admin/groupes/apprenants",
+ *                   "normalization_context"={"groups"={"getApp:read"}},
  *                   "security"="is_granted('ROLE_ADMIN')",
  *                   "security_message"="Vous n'avez pas access à cette Ressource",
  *
  *          },
- *          "postrefcomp"={
+ *          "postAppForm"={
  *               "method"="POST",
- *                   "path"="admin/referentiels",
- *                   
+ *                   "path"="admin/groupes",
+ *                   "denormalization_context" = {"groups"={"postAppForm:write"}},
  *                   "security"="is_granted('ROLE_ADMIN')",
  *                   "security_message"="Vous n'avez pas access à cette Ressource"
  *          }
  *     },
  *        itemOperations={
- *           "getByIdRefCompe"={
+ *           "getByIdApp"={
  *               "method"="GET",
- *                   "path"="admin/referentiels/{id}",
- *                   "normalization_context"={"groups"={"getByIdRefCompe:read"}},
+ *                   "path"="admin/groupes/{id}",
+ *                   "normalization_context"={"groups"={"getByIdApp:read"}},
  *                   "security"="is_granted('ROLE_ADMIN')",
  *                   "security_message"="Vous n'avez pas access à cette Ressource",
  *
  *          },
- *          "getByIdRefCompeGrpc"={
- *               "method"="GET",
- *                   "path"="admin/referentiels/{id_f}/grpecompetences/{id}",
- *                   "normalization_context"={"groups"={"getByIdRefCompeGrpc:read"}},
- *                   "security"="is_granted('ROLE_ADMIN')",
- *                   "security_message"="Vous n'avez pas access à cette Ressource",
- *
- *          },
- *          "putajoutsupref"={
+ *          "putApp"={
  *               "method"="PUT",
- *                   "path"="admin/referentiels/{id}",
+ *                   "path"="admin/groupes/{id}",
  *                   "security"="is_granted('ROLE_ADMIN')",
- *                   "denormalization_context"={"groups"={"putajoutsupref:write"}},
- *                   "security_message"="Vous n'avez pas access à cette Ressource"  
+ *                   "denormalization_context" = {"groups"={"putApp:write"}},
+ *                   "security_message"="Vous n'avez pas access à cette Ressource"
+ *          },
+ *          "delAppGrp"={
+ *               "method"="DELETE",
+ *                   "path"="admin/groupes/{ida}/apprenants/{id}",
+ *                   "security"="is_granted('ROLE_ADMIN')",
+ *                   "denormalization_context" = {"groups"={"delAppGrp:write"}},
+ *                   "security_message"="Vous n'avez pas access à cette Ressource"
  *          }
  *     }
  *      )
+ * 
  * @ORM\Entity(repositoryClass=GroupeRepository::class)
  */
 class Groupe
@@ -71,19 +71,19 @@ class Groupe
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"getPrRfApFr:read"})
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getPrRfApFr:read"})
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
      */
     private $nomgroupe;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"getPrRfApFr:read"})
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
      */
     private $typegroupe;
 
@@ -95,12 +95,16 @@ class Groupe
     private $promos;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes")
+     * @ORM\ManyToMany(targetEntity=Apprenant::class, inversedBy="groupes", cascade={"persist"})
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
+     * @ApiSubresource
      */
     private $apprenants;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="groupes")
+     * @ORM\ManyToMany(targetEntity=Formateur::class, inversedBy="groupes", cascade={"persist"})
+     * @Groups({"getPrRfApFr:read","postAppForm:write"})
+     * @ApiSubresource
      */
     private $formateurs;
 
