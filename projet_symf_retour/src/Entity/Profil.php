@@ -2,16 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProfilRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  * @ApiResource(
@@ -32,10 +33,17 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *                   "normalization_context"={"groups"={"get_trois_ad:read"}},
  *                   "security"="is_granted('ROLE_ADMIN')",
  *                   "security_message"="Vous n'avez pas access à cette Ressource"
- *          }
+ *          },
+ *      "put_pro"={
+ *               "method"="PUT",
+ *                   "path"="/profils/{id}",
+ *                   "denormalization_context"={"groups"={"put_pro:write"}},
+ *                   
+ *                 
+ *          }       
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"archivage":"partial"})
+//  * @ApiFilter(BooleanFilter::class, properties={"archivage"})
  */
 class Profil
 {
@@ -43,25 +51,26 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"profil:read","get_trois_ad:read"})
+     * @Groups({"profil:read","get_trois_ad:read","put_pro:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"profil:read","profil:write","get_trois_ad:read"})
+     * @Groups({"profil:read","profil:write","get_trois_ad:read","put_pro:write"})
      */
     private $libelle;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="profil")
      * @ApiSubresource()
+     * @Groups({"get_trois_ad:read"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="boolean",nullable=true)
-     * @Groups({"profil:read","profil:write","get_trois_ad:read"})
+     * @Groups({"profil:read","profil:write","get_trois_ad:read","put_pro:write"})
      */
     private $archivage;
 

@@ -11,7 +11,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
- * "denormalizationContext"={"groups"={"postrefcomp:write"}},
  * @ApiResource(
  *      collectionOperations={
  *          "getAllReferentiel"={
@@ -30,13 +29,6 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
  *                   "security_message"="Vous n'avez pas access à cette Ressource",
  *
  *          },
- *          "postrefcomp"={
- *               "method"="POST",
- *                   "path"="admin/referentiels",
- *                   
- *                   "security"="is_granted('ROLE_ADMIN')",
- *                   "security_message"="Vous n'avez pas access à cette Ressource"
- *          }
  *     },
  *        itemOperations={
  *           "getByIdRefCompe"={
@@ -72,7 +64,7 @@ class Referentiel
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"getPrRfApFr:read"})
+     * @Groups({"getPrRfApFr:read","getallCompetenceref:read"})
      */
     private $id;
 
@@ -93,6 +85,30 @@ class Referentiel
      * @ORM\OneToMany(targetEntity=Promo::class, mappedBy="referentiels")
      */
     private $promos;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"getallCompetenceref:read"})
+     */
+    private $presentation;
+
+    /**
+     * @ORM\Column(type="blob", nullable=true)
+     * @Groups({"getallCompetenceref:read"})
+     */
+    private $programme;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"getallCompetenceref:read"})
+     */
+    private $ce;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"getallCompetenceref:read"})
+     */
+    private $ca;
 
     public function __construct()
     {
@@ -167,6 +183,54 @@ class Referentiel
                 $promo->setReferentiels(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPresentation(): ?string
+    {
+        return $this->presentation;
+    }
+
+    public function setPresentation(?string $presentation): self
+    {
+        $this->presentation = $presentation;
+
+        return $this;
+    }
+
+    public function getProgramme()
+    {
+        return $this->programme;
+    }
+
+    public function setProgramme($programme): self
+    {
+        $this->programme = $programme;
+
+        return $this;
+    }
+
+    public function getCe(): ?string
+    {
+        return $this->ce;
+    }
+
+    public function setCe(string $ce): self
+    {
+        $this->ce = $ce;
+
+        return $this;
+    }
+
+    public function getCa(): ?string
+    {
+        return $this->ca;
+    }
+
+    public function setCa(string $ca): self
+    {
+        $this->ca = $ca;
 
         return $this;
     }

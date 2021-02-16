@@ -4,14 +4,14 @@
 namespace App\Services;
 
 
-use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Client\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use ApiPlatform\Core\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PutService
 {
@@ -67,6 +67,41 @@ class PutService
         $this->entitymanager->persist($dataId);
         $this->entitymanager->flush();
         return new JsonResponse("success",201);
+    }
+
+
+
+
+    // Update User
+    public function UpdateUser(Request $request, string $filename = null)
+    {
+        $row = $request->getContent();
+        $delimitor = "multipart/form-data; boundary=";
+        // dd($delimitor);
+        $boundary = "--".explode($delimitor, $request->headers->get("content-type"))[1];
+        // dd($boundary);
+        $elements = str_replace([$boundary,'Content-Disposition: form-data;',"name="],"",$row);
+        //dd($elements);
+        $tabElements = explode("\r\n\r\n", $elements);
+        //dd($tabElements);
+        $data = [];
+
+        for ($i = 0; isset($tabElements[$i+1]); $i++) {
+
+            $key = str_replace(["\r\n",'"','"'],'',$tabElements[$i]);
+            //dd($key);
+            if (strchr($key, $filename)) {
+                $file = fopen('php://memory', 'r+');
+                fwrite($file, $tabElements[$i+1]);
+                rewind($file);
+                $data[$filename] = $file;
+            } else {
+                $val = str_replace(["\r\n",'--'], '', $tabElements[$i+1]);
+                $data[$key] = $val;
+            }
+        }
+        //dd($data);
+        return $data;
     }
 
 }

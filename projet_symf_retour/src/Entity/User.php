@@ -23,6 +23,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *  normalizationContext={"groups"={"user:read"}},
  *  denormalizationContext={"groups"={"user:write"}},
  *     collectionOperations={
+ *           "get_un"={
+ *               "method"="GET",
+ *                   "path"="/users",
+ *                   "normalization_context"={"groups"={"get_un_ad:read"}},
+ *                   "security"="is_granted('ROLE_ADMIN')",
+ *                   "security_message"="Vous n'avez pas access à cette Ressource"
+ *          },
  *          "adding"={
  *              "route_name"="addUser" ,
  *              "method"="POST",
@@ -36,13 +43,13 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
+     * @Groups({"getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write","get_un_ad:read","get_trois_ad:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:write","user:read","get_un_ad:read","get_deux_ad:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write"})
+     * @Groups({"user:write","user:read","get_un_ad:read","get_deux_ad:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","postAppForm:write","getByIdApp:read","putApp:write","delAppGrp:write","get_trois_ad:read"})
      * @Assert\NotBlank(message="Cet utilisateur")
      */
     private $username;
@@ -64,7 +71,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="blob",nullable=true)
-     * @Groups({"user:write"})
+     * @Groups({"user:write","get_un_ad:read","user:read","get_trois_ad:read"})
      */
     private $photo;
 
@@ -73,7 +80,7 @@ class User implements UserInterface
      * @Assert\Email(
      *     message = "E-mail invalide."
      * )
-     * @Groups({"user:write","user:read","get_trois_ad:read","getPrRfApFr:read","getApp:read"})
+     * @Groups({"user:write","user:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","get_un_ad:read"})
      */
     private $email;
 
@@ -82,6 +89,18 @@ class User implements UserInterface
      * @Groups({"getPrRfApFr:read"})
      */
     private $archivage=0;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"user:write","user:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","get_un_ad:read"})
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"user:write","user:read","get_trois_ad:read","getPrRfApFr:read","getApp:read","get_un_ad:read"})
+     */
+    private $prenom;
 
     public function getId(): ?int
     {
@@ -205,6 +224,30 @@ class User implements UserInterface
     public function setArchivage(?bool $archivage): self
     {
         $this->archivage = $archivage;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
 
         return $this;
     }

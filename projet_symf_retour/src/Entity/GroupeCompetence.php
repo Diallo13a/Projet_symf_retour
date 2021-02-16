@@ -93,7 +93,7 @@ class GroupeCompetence
     private $competence;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Referentiel::class, mappedBy="groupecompetences")
+     * @ORM\ManyToMany(targetEntity=Referentiel::class, mappedBy="groupecompetences",cascade={"persist"})
      */
     private $referentiels;
 

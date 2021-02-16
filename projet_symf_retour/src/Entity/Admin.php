@@ -10,13 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  * @ORM\Entity(repositoryClass=AdminRepository::class)
  * @ApiResource(
  *     collectionOperations={
- *          "get_un"={
- *               "method"="GET",
- *                   "path"="admin/users",
- *                   "normalization_context"={"groups"={"get_un_ad:read"}},
- *                   "security"="is_granted('ROLE_ADMIN')",
- *                   "security_message"="Vous n'avez pas access à cette Ressource"
- *          },
+ *        
  *          "post_un"={
  *               "method"="POST",
  *                   "path"="admin/users",
